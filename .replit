@@ -1,15 +1,14 @@
-entrypoint = "main.py"
+run = ".venv/bin/python main.py"
+language = "python"
 modules = ["python-3.11"]
 
+[env]
+PYTHONPATH = "/home/runner/workspace"
+
 [nix]
-channel = "stable-24_05"
+enabled = true
+packages = ["cacert", "cargo", "glibcLocales", "gmp", "libiconv", "libxcrypt", "python39Packages.uvicorn", "rustc", "unzipNLS"]
 
-[unitTest]
-language = "python3"
-
-[gitHubImport]
-requiredFiles = [".replit", "replit.nix"]
-
-[deployment]
-run = ["python3", "main.py"]
-deploymentTarget = "cloudrun"
+[[ports]]
+localPort = 8080
+externalPort = 80
