@@ -1,35 +1,41 @@
-import time
+# module_dispatcher.py
 
-class ModuleDispatcher:
-    def __init__(self):
-        self.module_failures = {}
-        self.last_dispatch = {}
+import json
+import importlib
+import os
 
-    def record_failure(self, module_name):
-        now = time.time()
-        self.module_failures.setdefault(module_name, []).append(now)
-        # Keep only last 60 minutes
-        self.module_failures[module_name] = [
-            t for t in self.module_failures[module_name] if now - t < 3600
-        ]
+MODULE_DIR = "modules"
+STATS_FILE = "data/r5_statistics.json"
 
-    def needs_rotation(self, module_name):
-        fails = self.module_failures.get(module_name, [])
-        return len(fails) >= 2
+# Command to module mapping
+COMMAND_MAP = {
+    "/scalpel": "trade_module_scalpel",
+    "/trapx": "trade_module_trapx",
+    "/defcon6": "trade_module_defcon6",
+    "/rawstrike": "trade_module_rawstrike"
+}
 
-    def dispatch(self, module_name, module_obj, signal):
-        self.last_dispatch[module_name] = time.time()
-        if self.needs_rotation(module_name):
-            return {
-                "fallback": "rawstrike",
-                "reason": "Module unstable, fallback injected"
-            }
-        try:
-            result = module_obj.evaluate(signal)
-            return result
-        except Exception as e:
-            self.record_failure(module_name)
-            return {
-                "fallback": "rawstrike",
-                "error": str(e)
-            }
+def load_statistics():
+    if not os.path.exists(STATS_FILE):
+        return {}
+    with open(STATS_FILE, "r") as f:
+        return json.load(f)
+
+def record_failure(module_name, reason):
+    stats = load_statistics()
+    stats["module_failures"][module_name].append(reason)
+    with open(STATS_FILE, "w") as f:
+        json.dump(stats, f, indent=2)
+
+def dispatch(command, context):
+    if command not in COMMAND_MAP:
+        return {"status": "error", "message": "Unknown command"}
+
+    module_name = COMMAND_MAP[command]
+    try:
+        module = importlib.import_module(f"{MODULE_DIR}.{module_name}")
+        result = module.run(context)
+        return {"status": "success", "result": result}
+    except Exception as e:
+        record_failure(module_name.replace("trade_module_", ""), str(e))
+        return {"status": "failed", "error": str(e)}
