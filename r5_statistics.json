@@ -1,0 +1,11 @@
+{
+  "last_trade": null,
+  "module_failures": {
+    "scalpel": [],
+    "trapx": [],
+    "defcon6": [],
+    "rawstrike": []
+  },
+  "fallback_log": [],
+  "session_start": null
+}
