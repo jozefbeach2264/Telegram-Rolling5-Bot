@@ -5,7 +5,7 @@ import json
 class SignalListener:
     def __init__(self, engine):
         self.engine = engine
-        self.ws_url = "ws://localhost:8000/ws"
+        self.ws_url = "wss://<neurosync-url>.replit.dev/ws"
 
     async def listen(self):
         print("[LISTENER] Connecting to core signal network...")
