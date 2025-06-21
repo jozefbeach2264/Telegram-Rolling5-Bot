@@ -1,6 +1,4 @@
-import asyncio
 import websockets
-import json
 
 class SignalListener:
     def __init__(self, engine):

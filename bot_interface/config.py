@@ -1,7 +1,0 @@
-NETWORK_URL = "https://bac4d511-16b6-482e-8ccc-eb134f27ce6a-00-2fdyzur7p8drl.riker.replit.dev/ws"
-SIMULATION_MODE = True
-STARTING_CAPITAL = 10.0
-REINVEST = True
-TAKER_FEE = 0.0034  # 0.34%
-LEVERAGE = 250
-LIQUIDATION_THRESHOLD = 10

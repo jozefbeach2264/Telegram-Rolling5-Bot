@@ -1,7 +1,4 @@
-.env
-execution_log.json.*
-failed_signals.json
-backups/
 __pycache__/
 *.pyc
-trades.json 
+.env
+command_history.json

@@ -1,5 +1,5 @@
-from .config import SIMULATION_MODE, STARTING_CAPITAL, TAKER_FEE, LEVERAGE
-from .performance_tracker import update_balance, get_balance
+from .config import STARTING_CAPITAL, TAKER_FEE, LEVERAGE
+from .performance_tracker import update_balance
 
 capital = STARTING_CAPITAL
 

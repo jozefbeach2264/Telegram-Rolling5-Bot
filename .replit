@@ -10,5 +10,9 @@ enabled = true
 packages = ["cacert", "cargo", "glibcLocales", "gmp", "libiconv", "libxcrypt", "python39Packages.uvicorn", "rustc", "unzipNLS"]
 
 [[ports]]
+localPort = 8000
+externalPort = 8000
+
+[[ports]]
 localPort = 8080
 externalPort = 80

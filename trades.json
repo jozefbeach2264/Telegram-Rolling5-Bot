@@ -1,0 +1,53 @@
+[
+  {
+    "signal_id": 1,
+    "type": "buy",
+    "price": 2594.12,
+    "timestamp": "2025-06-13T09:30:00Z",
+    "direction": "LONG",
+    "exit_price": 2630.5,
+    "roi": 1.94,
+    "detonation": "2025-06-13T10:00:00",
+    "confidence": 0.85,
+    "predictions": {
+      "price_direction": "up",
+      "c1": {
+        "action": "Entry triggered",
+        "price": 2594.12,
+        "volume": "18.2K"
+      },
+      "c2": {
+        "action": "Confirmed long",
+        "price": 2601.54,
+        "volume": "20.7K"
+      },
+      "c3": {
+        "action": "Volume spike",
+        "price": 2620.4,
+        "volume": "25.3K"
+      },
+      "c4": {
+        "action": "Reversal pressure detected",
+        "price": 2632.01,
+        "volume": "16.4K"
+      },
+      "c5": {
+        "action": "Early TP exit",
+        "price": 2630.5,
+        "volume": "14.9K"
+      },
+      "midpoint": 2612.31,
+      "roi_so_far": "+1.94%",
+      "expected_move": "drop to 2610 zone if reversal confirms"
+    },
+    "mode": "auto",
+    "exit_time": "2025-06-13T09:45:00Z"
+  },
+  {
+    "entry": 2490.5,
+    "exit": 2489.8500000000004,
+    "side": "long",
+    "profit": -162.49999999990905,
+    "net": 10.0
+  }
+]

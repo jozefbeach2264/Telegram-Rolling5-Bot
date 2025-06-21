@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "telegram-bot"
+version = "0.1.0"
+description = "Telegram interface for the trading system."
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+# The official library for creating Telegram bots
+python-telegram-bot = {extras = ["ext"], version = "^20.7"}
+# We also include FastAPI/Uvicorn to receive notifications from the TradingCore
+fastapi = "^0.104.1"
+uvicorn = {extras = ["standard"], version = "^0.24.0.post1"}
+# To load secrets
+python-dotenv = "^1.0.0"
+# To make API calls to the other services
+httpx = "^0.25.2"
+telegram = "^0.0.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
