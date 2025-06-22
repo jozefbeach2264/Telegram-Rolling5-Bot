@@ -1,6 +1,6 @@
 run = "python3 -m uvicorn main:app --reload"
 language = "python3"
-modules = ["python-3.10"]
+modules = ["nodejs-20", "python-3.10"]
 
 [nix]
 packages = ["python310Packages.fastapi", "python310Packages.httpx", "python310Packages.pip", "python310Packages.pydantic", "python310Packages.setuptools", "python310Packages.uvicorn", "python310Packages.wheel"]
