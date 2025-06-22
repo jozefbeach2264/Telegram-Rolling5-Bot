@@ -1,9 +1,7 @@
-# rolling5/telegram_bot.py
 import logging
 from telegram import Update
-from telegram.ext import Application, ContextTypes
-from telegram.ext import CommandHandler as TelegramCommandHandler
-from telegram.error import NetworkError # <-- Import the specific error
+from telegram.ext import Application, ContextTypes, CommandHandler as TelegramCommandHandler
+from telegram.error import NetworkError
 from command_handler import CommandHandler
 from config import Config
 
@@ -16,51 +14,58 @@ class TelegramBot:
         self.application = None
 
     async def initialize(self):
-        """Builds and initializes the bot application and handlers."""
         logger.info("Initializing Telegram Bot application...")
-        self.application = Application.builder().token(self.config.telegram_bot_token).build()
-        self.application.add_handler(TelegramCommandHandler("start", self.start))
-        self.application.add_handler(TelegramCommandHandler("status", self.status))
-        self.application.add_handler(TelegramCommandHandler("trade", self.trade))
-        await self.application.initialize()
-        logger.info("Telegram Bot initialized.")
+        try:
+            self.application = Application.builder().token(self.config.telegram_bot_token).build()
+            self.application.add_handler(TelegramCommandHandler("start", self.start))
+            self.application.add_handler(TelegramCommandHandler("status", self.status))
+            self.application.add_handler(TelegramCommandHandler("trade", self.trade))
+            await self.application.initialize()
+            logger.info("Telegram Bot initialized.")
+        except Exception as e:
+            logger.error(f"Initialization failed: {e}")
+            raise
 
     async def start_polling(self):
-        """Starts the polling process."""
-        if self.application:
-            logger.info("Starting Telegram Bot polling...")
-            await self.application.start()
-            await self.application.updater.start_polling()
-
-    async def shutdown(self):
-        """Stops the application gracefully and then shuts it down, handling network errors."""
+        logger.info("Starting Telegram Bot polling...")
         if self.application:
             try:
-                # First, stop all running components
-                if self.application.updater and self.application.updater.is_running:
-                    logger.info("Stopping bot polling...")
-                    await self.application.updater.stop()
-                
-                logger.info("Shutting down Telegram application...")
-                await self.application.shutdown()
-                
-                logger.info("Telegram Bot shut down successfully.")
+                await self.application.start_polling()
+                logger.info("Polling started.")
             except NetworkError as e:
-                # If a network error occurs during shutdown, log it gracefully
-                logger.warning(f"Shutdown failed due to a network error: {e}")
-            except Exception as e:
-                logger.error(f"An unexpected error occurred during bot shutdown: {e}")
+                logger.error(f"Polling failed: {e}")
+                raise
 
-    # --- Command Handlers ---
     async def start(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        response = await self.command_handler.handle_start(update.effective_chat.id)
-        await update.message.reply_text(response)
+        try:
+            await update.message.reply_text(await self.command_handler.handle_start(update.effective_user.id))
+        except Exception as e:
+            logger.error(f"Start command failed: {e}")
+            await update.message.reply_text("Error processing /start.")
 
     async def status(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        response = await self.command_handler.handle_status(update.effective_chat.id)
-        await update.message.reply_html(response)
-    
+        try:
+            response = await self.command_handler.handle_status(update.effective_user.id)
+            await update.message.reply_text(response, parse_mode="HTML")
+        except Exception as e:
+            logger.error(f"Status command failed: {e}")
+            await update.message.reply_text("Error retrieving status.")
+
     async def trade(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        strategy = context.args[0].lower() if context.args else ""
-        response = await self.command_handler.handle_trade_command(strategy, update.effective_chat.id)
-        await update.message.reply_html(response)
+        try:
+            strategy = " ".join(context.args) if context.args else ""
+            await update.message.reply_text(await self.command_handler.handle_trade_command(strategy, update.effective_user.id))
+        except Exception as e:
+            logger.error(f"Trade command failed: {e}")
+            await update.message.reply_text("Error processing /trade.")
+
+    async def shutdown(self):
+        logger.info("Shutting down Telegram Bot...")
+        if self.application:
+            try:
+                await self.application.stop()
+                await self.application.shutdown()
+                logger.info("Telegram Bot shutdown complete.")
+            except Exception as e:
+                logger.error(f"Shutdown failed: {e}")
+                raise
