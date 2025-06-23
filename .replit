@@ -5,17 +5,6 @@ modules = ["nodejs-20", "python-3.10"]
 [nix]
 packages = ["python310Packages.fastapi", "python310Packages.httpx", "python310Packages.pip", "python310Packages.pydantic", "python310Packages.setuptools", "python310Packages.uvicorn", "python310Packages.wheel"]
 
-[workflows]
-
-[[workflows.workflow]]
-name = "GET MONEY"
-mode = "sequential"
-author = 44035426
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "uvicorn main:app --reload"
-
 [[ports]]
 localPort = 8000
 externalPort = 80
